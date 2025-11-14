@@ -5,14 +5,18 @@
   <meta charset="UTF-8">
   <title>Title</title>
     <script>
-        let angle_new = document.querySelector('#angle').value;
+        let anglenew = document.querySelector('#angle').value;
         if (!isNaN(angle_new)) {
-          const angleradians = angle_new * Math.PI / 180;
+          const angleradians = anglenew * Math.PI / 180;
           const phusic = 10*10*Math.cos(angleradians);
           alert(`Результат: ${result.toFixed(2)}`);
+        window.onload = () => {
+          document.querySelector('#phusicbutton').addEventListener('click', calculate);
+      };
     </script>
 </head>
 <body>
   <input type="text" id="angle" name="angle" placeholder="Введите угол в градусах">
+  <button id="phusicbutton">Рассчитать</button>
 </body>
 </html>
