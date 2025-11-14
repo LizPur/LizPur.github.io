@@ -5,8 +5,12 @@
   <meta charset="UTF-8">
   <title>Title</title>
     <script>
-        let angle_new = document.getElementById("angle");
+        let angle_new = document.querySelector('#angle').value;
         alert(10*10*cos(angle));
+        if (!isNaN(angle_new)) {
+          const angleradians = angle_new * Math.PI / 180;
+          const phusic = 10*10*Math.cos(angleradians);
+          alert(`Результат: ${result.toFixed(2)}`);
     </script>
 </head>
 <body>
