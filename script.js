@@ -16,19 +16,16 @@ function phusic(){
    let label_gravity = document.querySelector('#print_gravity');
    if (mater === 'copper') {
         gravity = (size * 8.92 * 10)/1000;
-        // alert(gravity + ' H сила тяжести маятника');
 }  else if (mater === 'silver') {
         gravity = (size * 10.49 * 10)/1000;
-        // alert(gravity + ' H сила тяжести маятника');
 }  else if (mater === 'iron') {
         gravity = (size * 7.87 * 10)/1000;
-        // alert(gravity + ' H сила тяжести маятника');
     }
-    label_gravity.innerHTML = gravity;
+    label_gravity.innerHTML = 'Сила тяжести ' + gravity + ' H';
 }
 
 window.onload = () => {
   const button = document.querySelector('#phusicbutton');
-//   button.addEventListener('click', calculate);
+//button.addEventListener('click', calculate);
   button.addEventListener('click', phusic);
 };
