@@ -1,31 +1,241 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const angleInput = document.getElementById('angle'); /* Поле ввода угла */
+    const startButton = document.getElementById('startButton'); /* Кнопка запуска */
+    const stopButton = document.getElementById('stopButton'); /* Кнопка остановки */
+    const promptLabel = document.getElementById('prompt'); /* Метка для сообщений */
+    const printInitialAngle = document.getElementById('print_initial_angle'); /* Метка начального угла */
+    const printFinalAngle = document.getElementById('print_final_angle'); /* Метка конечного угла */
+    const printPeriod = document.getElementById('print_period'); /* Метка периода колебаний */
+    const printEnergy = document.getElementById('print_energy'); /* Метка полной энергии */
+    const printCycle = document.getElementById('print_cycle'); /* Метка номера цикла */
+    const cycleCount = document.getElementById('cycleCount'); /* Счетчик циклов в панели */
+    const activePendulum = document.getElementById('activePendulum'); /* Индикатор активного маятника */
 
-function calculate() {
-    let anglenew = document.querySelector('#angle').value;
-    let label_angle = document.querySelector('#print_angle')
-    if (anglenew) {
-        let angleradians = anglenew * Math.PI / 180;
-        label_angle.textContent = 'Угол в градусах - '+ angleradians;
+    const pendulum1 = document.getElementById('pendulum1'); /* Первый маятник */
+    const pendulum2 = document.getElementById('pendulum2'); /* Второй маятник */
+    const weight1 = document.getElementById('weight1'); /* Груз первого маятника */
+    const weight2 = document.getElementById('weight2'); /* Груз второго маятника */
+
+    // Физические константы
+    const g = 9.81; // ускорение свободного падения, м/с²
+    const L = 1.0; // длина маятника, м
+    const m = 1.0; // масса шара, кг
+
+    let isAnimating = false; /* Флаг выполнения анимации (true - идет, false - остановлена) */
+    let currentCycle = 0; /* Текущий номер цикла (от 0 до 5) */
+    const totalCycles = 5; /* Общее количество циклов для выполнения */
+    let initialAngle = 0; /* Начальный угол в градусах */
+    let currentAngle = 0; /* Текущий угол в градусах */
+
+     // ФУНКЦИЯ РАСЧЕТА ПЕРИОДА КОЛЕБАНИЙ
+    // Возвращает период в секундах для заданного угла
+    function calculatePeriod(angleDeg) {
+      const angleRad = angleDeg * Math.PI / 180; /* Преобразование градусов в радианы */
+      const T0 = 2 * Math.PI * Math.sqrt(L / g); /* Формула периода для малых углов: T = 2π√(L/g) */
+
+      // Поправка на большие углы
+      if (angleDeg <= 15) {
+        return T0; /* Для малых углов поправка не нужна */
+      } else {
+        // Приближенная формула для больших углов
+        const K = Math.sin(angleRad / 2); /* Вспомогательная переменная */
+        return T0 * (1 + K*K/4 + 9*K*K*K*K/64); /* Разложение в ряд с учетом нелинейности */
+      }
     }
-}
 
-function phusic(){
-   let size = document.querySelector('#size').value;
-   let gravity;
-   let select = document.querySelector('select');
-   let mater = select.value;
-   let label_gravity = document.querySelector('#print_gravity');
-   if (mater === 'copper') {
-        gravity = (size * 8.92 * 10)/1000;
-}  else if (mater === 'silver') {
-        gravity = (size * 10.49 * 10)/1000;
-}  else if (mater === 'iron') {
-        gravity = (size * 7.87 * 10)/1000;
+    // ФУНКЦИЯ РАСЧЕТА ПОЛНОЙ ЭНЕРГИИ
+    // Возвращает энергию в джоулях для заданного угла
+    function calculateEnergy(angleDeg) {
+      const angleRad = angleDeg * Math.PI / 180; /* Преобразование градусов в радианы */
+      const h = L * (1 - Math.cos(angleRad)); /* Высота подъема груза: h = L(1 - cosθ) */
+      return m * g * h; /* Потенциальная энергия: E = mgh */
     }
-    label_gravity.innerHTML = 'Сила тяжести ' + gravity + ' H';
-}
 
-window.onload = () => {
-  const button = document.querySelector('#phusicbutton');
-//button.addEventListener('click', calculate);
-  button.addEventListener('click', phusic);
-};
+    // ЭФФЕКТ СТОЛКНОВЕНИЯ
+    // Визуальный эффект увеличения шаров при столкновении
+    function showCollision() {
+      weight1.classList.add('collision'); /* Добавляем класс анимации первому шару */
+      weight2.classList.add('collision'); /* Добавляем класс анимации второму шару */
+      setTimeout(() => { /* Через 300ms убираем класс анимации */
+        weight1.classList.remove('collision');
+        weight2.classList.remove('collision');
+      }, 300);
+    }
+
+    // ПЛАВНОЕ ДВИЖЕНИЕ МАЯТНИКА
+    // Анимирует вращение маятника к заданному углу
+    function animatePendulum(pendulum, targetAngle, duration) {
+      return new Promise(resolve => { /* Возвращаем Promise для асинхронного ожидания */
+        pendulum.style.transition = `transform ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`; /* Устанавливаем CSS transition */
+        setTimeout(() => { /* Небольшая задержка перед началом анимации */
+          pendulum.style.transform = `rotate(${targetAngle}deg)`; /* Устанавливаем конечный угол */
+        }, 10);
+
+        setTimeout(() => { /* По окончании анимации */
+          pendulum.style.transition = ''; /* Убираем transition */
+          resolve(); /* Разрешаем Promise */
+        }, duration + 10);
+      });
+    }
+
+    // ОДИН ПОЛНЫЙ ЦИКЛ ПЕРЕДАЧИ ЭНЕРГИИ
+    // Выполняет: 1→центр→2→центр→1
+    async function runCollisionCycle(cycleNum, angle) {
+      console.log(`Цикл ${cycleNum}, угол: ${angle.toFixed(1)}°`); /* Логирование в консоль */
+
+      // ОБНОВЛЕНИЕ UI
+      currentCycle = cycleNum; /* Сохраняем текущий номер цикла */
+      cycleCount.textContent = cycleNum; /* Обновляем счетчик в панели */
+      printCycle.textContent = `Цикл: ${cycleNum}/${totalCycles}`; /* Обновляем метку цикла */
+      printFinalAngle.textContent = `Конечный угол: ${angle.toFixed(1)}°`; /* Обновляем конечный угол */
+
+      // 1. ПЕРВЫЙ МАЯТНИК ДВИЖЕТСЯ К ЦЕНТРУ
+      printPeriod.textContent = `Период колебаний: ${calculatePeriod(angle).toFixed(2)} с`; /* Расчет периода */
+      printEnergy.textContent = `Полная энергия: ${calculateEnergy(angle).toFixed(2)} Дж`; /* Расчет энергии */
+      activePendulum.textContent = '🔴'; /* Показываем что активен красный маятник */
+
+      await animatePendulum(pendulum1, 0, 1000); /* Анимация движения к центру (1000ms) */
+
+      // СТОЛКНОВЕНИЕ 1
+      showCollision(); /* Эффект столкновения */
+      await new Promise(resolve => setTimeout(resolve, 300)); /* Пауза 300ms */
+
+      // 2. ВТОРОЙ МАЯТНИК ДВИЖЕТСЯ ОТ ЦЕНТРА
+      activePendulum.textContent = '🔵'; /* Теперь активен синий маятник */
+      await animatePendulum(pendulum2, -angle, 1000); /* Движение влево (отрицательный угол) */
+
+      // 3. ВТОРОЙ МАЯТНИК ВОЗВРАЩАЕТСЯ К ЦЕНТРУ
+      activePendulum.textContent = '🔵'; /* Синий маятник все еще активен */
+      await animatePendulum(pendulum2, 0, 1000); /* Возврат к центру */
+
+      // СТОЛКНОВЕНИЕ 2
+      showCollision(); /* Второй эффект столкновения */
+      await new Promise(resolve => setTimeout(resolve, 300)); /* Пауза 300ms */
+
+      // 4. ПЕРВЫЙ МАЯТНИК ВОЗВРАЩАЕТСЯ НА МЕСТО
+      activePendulum.textContent = '🔴'; /* Снова активен красный маятник */
+      await animatePendulum(pendulum1, angle, 1000); /* Возврат в исходное положение */
+
+      console.log(`Цикл ${cycleNum} завершен`); /* Логирование завершения цикла */
+    }
+
+    // ГЛАВНАЯ ФУНКЦИЯ АНИМАЦИИ
+    // Управляет выполнением всех 5 циклов
+    async function startAnimation() {
+      if (isAnimating) return; /* Если анимация уже идет, выходим */
+
+      const inputAngle = parseFloat(angleInput.value); /* Получаем угол из поля ввода */
+
+      // ПРОВЕРКА ВВОДА
+      if (isNaN(inputAngle) || inputAngle < 10 || inputAngle > 60) {
+        promptLabel.textContent = 'Введите угол от 10° до 60°'; /* Сообщение об ошибке */
+        promptLabel.style.color = '#e74c3c'; /* Красный цвет для ошибки */
+        return; /* Прерываем выполнение */
+      }
+
+      // НАЧАЛО АНИМАЦИИ
+      isAnimating = true; /* Устанавливаем флаг анимации */
+      initialAngle = inputAngle; /* Сохраняем начальный угол */
+      currentAngle = inputAngle; /* Текущий угол равен начальному */
+
+      // ОБНОВЛЕНИЕ РАСЧЕТОВ
+      printInitialAngle.textContent = `Начальный угол: ${initialAngle}°`;
+      printFinalAngle.textContent = `Конечный угол: ${initialAngle}°`;
+      printPeriod.textContent = `Период колебаний: ${calculatePeriod(initialAngle).toFixed(2)} с`;
+      printEnergy.textContent = `Полная энергия: ${calculateEnergy(initialAngle).toFixed(2)} Дж`;
+      printCycle.textContent = `Цикл: 0/${totalCycles}`;
+
+      promptLabel.textContent = 'Анимация началась...'; /* Сообщение о начале */
+      promptLabel.style.color = '#3498db'; /* Синий цвет для информационного сообщения */
+
+      // СБРОС ПОЗИЦИЙ МАЯТНИКОВ
+      pendulum1.style.transform = `rotate(${initialAngle}deg)`; /* Первый маятник в начальной позиции */
+      pendulum2.style.transform = `rotate(0deg)`; /* Второй маятник в центре */
+      pendulum1.style.transition = ''; /* Сбрасываем transition */
+      pendulum2.style.transition = ''; /* Сбрасываем transition */
+
+      await new Promise(resolve => setTimeout(resolve, 500)); /* Пауза 500ms перед началом */
+
+      // ВЫПОЛНЕНИЕ 5 ЦИКЛОВ
+      try {
+        for (let i = 1; i <= totalCycles; i++) { /* Цикл от 1 до 5 */
+          if (!isAnimating) break; /* Если анимацию остановили, прерываем цикл */
+
+          // ВЫЧИСЛЕНИЕ УГЛА ДЛЯ ТЕКУЩЕГО ЦИКЛА
+          const cycleAngle = initialAngle * Math.pow(0.85, i - 1); /* Уменьшение угла на 15% каждый цикл */
+          currentAngle = cycleAngle; /* Сохраняем текущий угол */
+
+          await runCollisionCycle(i, cycleAngle); /* Выполняем цикл */
+
+          // ПАУЗА МЕЖДУ ЦИКЛАМИ (кроме последнего)
+          if (i < totalCycles && isAnimating) { /* Проверяем не последний ли цикл и идет ли анимация */
+            await new Promise(resolve => setTimeout(resolve, 300)); /* Ждем 300ms перед следующим циклом */
+          }
+        }
+
+        if (isAnimating) { /* Если анимация не была остановлена */
+          // ЗАВЕРШЕНИЕ АНИМАЦИИ
+          promptLabel.textContent = 'Анимация завершена! 5 циклов выполнено'; /* Финальное сообщение */
+          promptLabel.style.color = '#2ecc71'; /* Зеленый цвет для успешного завершения */
+          activePendulum.textContent = '-'; /* Сбрасываем индикатор активного маятника */
+
+          // ПЛАВНАЯ ОСТАНОВКА В ЦЕНТРЕ
+          await animatePendulum(pendulum1, 0, 1000); /* Плавно ставим первый маятник в центр */
+          await animatePendulum(pendulum2, 0, 1000); /* Плавно ставим второй маятник в центр */
+        }
+
+      } catch (error) { /* Обработка возможных ошибок */
+        console.error('Ошибка анимации:', error); /* Вывод ошибки в консоль браузера */
+        promptLabel.textContent = 'Ошибка анимации'; /* Сообщение пользователю */
+        promptLabel.style.color = '#e74c3c'; /* Красный цвет для ошибки */
+      } finally { /* Этот блок выполняется всегда, независимо от успеха или ошибки */
+        isAnimating = false; /* Сбрасываем флаг анимации */
+      }
+    }
+
+    // ФУНКЦИЯ ОСТАНОВКИ АНИМАЦИИ
+    // Немедленно прерывает выполнение и сбрасывает состояние
+    function stopAnimation() {
+      isAnimating = false; /* Устанавливаем флаг в false - останавливаем анимацию */
+
+      // ОСТАНОВКА АНИМАЦИЙ
+      pendulum1.style.transition = 'transform 0.5s ease-out'; /* Плавный переход для первого маятника */
+      pendulum2.style.transition = 'transform 0.5s ease-out'; /* Плавный переход для второго маятника */
+      pendulum1.style.transform = 'rotate(0deg)'; /* Сбрасываем угол первого маятника */
+      pendulum2.style.transform = 'rotate(0deg)'; /* Сбрасываем угол второго маятника */
+
+      setTimeout(() => { /* Через 500ms после начала анимации остановки */
+        pendulum1.style.transition = ''; /* Убираем transition у первого маятника */
+        pendulum2.style.transition = ''; /* Убираем transition у второго маятника */
+      }, 500);
+
+      promptLabel.textContent = 'Анимация остановлена'; /* Сообщение пользователю */
+      promptLabel.style.color = '#e74c3c'; /* Красный цвет для сообщения об остановке */
+      activePendulum.textContent = '-'; /* Сбрасываем индикатор активного маятника */
+      cycleCount.textContent = '-'; /* Сбрасываем счетчик циклов в панели */
+    }
+
+    // ОБРАБОТЧИКИ СОБЫТИЙ
+    // Связываем функции с действиями пользователя
+
+    startButton.addEventListener('click', startAnimation); /* При клике на "Начать анимацию" запускаем startAnimation() */
+
+    stopButton.addEventListener('click', stopAnimation); /* При клике на "Остановить" запускаем stopAnimation() */
+
+    angleInput.addEventListener('keypress', function(e) { /* Обработка нажатия клавиш в поле ввода угла */
+      if (e.key === 'Enter') { /* Если нажата клавиша Enter */
+        startAnimation(); /* Запускаем анимацию так же, как при клике на кнопку */
+      }
+    });
+
+    // ИНИЦИАЛИЗАЦИЯ ИНТЕРФЕЙСА
+    // Устанавливаем начальные значения для всех отображаемых элементов
+
+    printInitialAngle.textContent = 'Начальный угол: -'; /* Пустое значение для начального угла */
+    printFinalAngle.textContent = 'Конечный угол: -'; /* Пустое значение для конечного угла */
+    printPeriod.textContent = 'Период колебаний: -'; /* Пустое значение для периода */
+    printEnergy.textContent = 'Полная энергия: -'; /* Пустое значение для энергии */
+    printCycle.textContent = 'Цикл: -/5'; /* Пустое значение для счетчика циклов */
+    cycleCount.textContent = '-'; /* Пустое значение в информационной панели */
+    activePendulum.textContent = '-'; /* Пустое значение для индикатора активного маятника */
+  }); /* Конец функции, переданной в addEventListener */

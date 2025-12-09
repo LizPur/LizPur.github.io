@@ -8,41 +8,51 @@
 <body>
 <div class="controls-container">
   <fieldset>
-    <legend>Маятник</legend>
-    <input type="text" id="angle" name="angle" placeholder="Угол в градусах">
-    <input type="text" id="size" name="size" placeholder="Размер маятника(в см.куб)">
-    <button id="phusicbutton">Рассчитать</button>
-    <label id="prompt"></label>
-    <div id = 'material'>Материал маятников
-      <select required>
-        <option disabled value ='' selected>Не выбран</option>
-        <option value = 'copper'>Медь</option>
-        <option value = 'silver'>Серебро</option>
-        <option value = 'iron'>Железо</option>
-      </select>
+    <legend>Физический маятник</legend>
+    <div style="text-align: center; margin-bottom: 15px; color: white;">
+      Введите начальный угол (10° - 60°)
     </div>
-    </fieldset>
+    <div style="text-align: center;">
+      <input type="number" id="angle" name="angle" placeholder="Угол в градусах" min="10" max="60" step="1" value="30">
+      <button id="startButton">Начать анимацию</button>
+      <button id="stopButton">Остановить</button>
+    </div>
+    <label id="prompt"></label>
+  </fieldset>
 </div>
-<fieldset>
-  <li><label id = 'print_gravity'></label></li>
-  <li><label id = 'print_angle'></label></li>
-</fieldset>
-  <script src="script.js"></script>
+
+<div class="results">
+  <fieldset>
+    <legend>Результаты расчетов</legend>
+    <li><label id="print_initial_angle">Начальный угол: -</label></li>
+    <li><label id="print_final_angle">Конечный угол: -</label></li>
+    <li><label id="print_period">Период колебаний: -</label></li>
+    <li><label id="print_energy">Полная энергия: -</label></li>
+    <li><label id="print_cycle">Цикл: -/5</label></li>
+  </fieldset>
+</div>
+
 <div class="pendulum-system">
-        <div class="double-pendulum">
-            <div class="pendulum pendulum-1">
-                <div class="pendulum-swing">
-                    <div class="string"></div>
-                    <div class="weight"></div>
-                </div>
-            </div>
-            <div class="pendulum pendulum-2">
-                <div class="pendulum-swing">
-                    <div class="string"></div>
-                    <div class="weight"></div>
-                </div>
-            </div>
-        </div>
+  <div class="double-pendulum">
+    <div class="center-line"></div>
+    <div class="info-panel">
+      Цикл: <span id="cycleCount">-</span>/5 |
+      Активен: <span id="activePendulum">-</span>
+    </div>
+    <div class="pendulum pendulum-1">
+      <div class="pendulum-swing" id="pendulum1">
+        <div class="string"></div>
+        <div class="weight" id="weight1"></div>
+      </div>
+    </div>
+    <div class="pendulum pendulum-2">
+      <div class="pendulum-swing" id="pendulum2">
+        <div class="string"></div>
+        <div class="weight" id="weight2"></div>
+      </div>
+    </div>
+  </div>
 </div>
+<script src="script.js"></script>
 </body>
 </html>

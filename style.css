@@ -1,140 +1,210 @@
+body {
+      margin: 0; /* Убирает стандартные отступы браузера по краям страницы */
+      padding: 20px; /* Добавляет внутренние отступы 20px со всех сторон */
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Создает градиентный фон от синего к фиолетовому */
+      min-height: 100vh; /* Устанавливает минимальную высоту равной высоте окна браузера */
+      font-family: Arial, sans-serif; /* Устанавливает шрифт Arial для всего текста */
+      display: flex; /* Включает flexbox для гибкого расположения элементов */
+      flex-direction: column; /* Располагает flex-элементы вертикально (сверху вниз) */
+      align-items: center; /* Центрирует элементы по горизонтали */
+    }
 
-#phusicbutton {
-    padding: 12px 25px;
-    margin: 5px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+.controls-container {
+      background: rgba(255, 255, 255, 0.1); /* Полупрозрачный белый фон с прозрачностью 10% */
+      border-radius: 15px; /* Скругляет углы контейнера радиусом 15px */
+      padding: 20px; /* Внутренние отступы внутри контейнера */
+      margin-bottom: 20px; /* Отступ снизу перед следующим элементом */
+      border: 2px solid rgba(255, 255, 255, 0.2); /* Полупрозрачная белая рамка толщиной 2px */
+      width: 80%; /* Ширина контейнера 80% от родительского элемента */
+      max-width: 600px; /* Максимальная ширина ограничена 600px */
 }
 
-#phusicbutton:hover {
-    background: linear-gradient(135deg, #2980b9, #3498db);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+fieldset {
+      border: 2px solid rgba(255, 255, 255, 0.3); /* Полупрозрачная белая рамка */
+      border-radius: 10px; /* Скругленные углы радиусом 10px */
+      padding: 15px; /* Внутренние отступы */
+      margin-bottom: 15px; /* Отступ снизу между fieldset элементами */
+      background: rgba(255, 255, 255, 0.05); /* Очень легкий полупрозрачный фон */
 }
 
-#phusicbutton:active {
-    transform: translateY(0);
+legend {
+      color: white; /* Белый цвет текста */
+      font-weight: bold; /* Жирное начертание текста */
+      padding: 0 10px; /* Горизонтальные отступы по 10px слева и справа */
+      font-size: 1.2em; /* Увеличенный размер шрифта (120% от базового) */
 }
 
-#material {
-    margin-top: 15px;
-     сolor: white;
+input {
+      padding: 12px 15px; /* Внутренние отступы: 12px сверху/снизу, 15px слева/справа */
+      margin: 8px 5px; /* Внешние отступы: 8px сверху/снизу, 5px слева/справа */
+      border: none; /* Убирает стандартную рамку браузера */
+      border-radius: 8px; /* Скругляет углы поля ввода */
+      background: rgba(255, 255, 255, 0.9); /* Почти непрозрачный белый фон */
+      font-size: 16px; /* Размер шрифта 16px */
+      width: 200px; /* Фиксированная ширина поля ввода */
+      text-align: center; /* Выравнивание текста по центру */
+}
+
+input::placeholder {
+      color: #7f8c8d; /* Серый цвет текста подсказки */
+}
+
+#startButton {
+       padding: 12px 25px; /* Внутренние отступы кнопки */
+      margin: 5px; /* Внешние отступы вокруг кнопки */
+      border: none; /* Без рамки */
+      border-radius: 8px; /* Скругленные углы кнопки */
+      background: linear-gradient(135deg, #2ecc71, #27ae60); /* Зеленый градиентный фон */
+      color: white; /* Белый цвет текста */
+      font-weight: bold; /* Жирный текст */
+      font-size: 16px; /* Размер шрифта */
+      cursor: pointer; /* Курсор в виде руки при наведении */
+      transition: all 0.3s ease; /* Плавный переход всех свойств за 0.3 секунды */
+      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); /* Зеленая тень под кнопкой */
+}
+
+#startButton:hover {
+      background: linear-gradient(135deg, #27ae60, #2ecc71); /* Инвертированный градиент */
+      transform: translateY(-2px); /* Слегка поднимает кнопку вверх на 2px */
+      box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4); /* Усиленная тень при наведении */
+}
+
+#stopButton {
+      padding: 12px 25px; /* Такие же размеры как у стартовой кнопки */
+      margin: 5px; /* Такие же отступы */
+      border: none; /* Без рамки */
+      border-radius: 8px; /* Скругленные углы */
+      background: linear-gradient(135deg, #e74c3c, #c0392b); /* Красный градиентный фон */
+      color: white; /* Белый текст */
+      font-weight: bold; /* Жирный текст */
+      font-size: 16px; /* Размер шрифта */
+      cursor: pointer; /* Курсор в виде руки */
+      transition: all 0.3s ease; /* Плавные переходы */
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); /* Красная тень */
+}
+
+#stopButton:hover {
+      background: linear-gradient(135deg, #c0392b, #e74c3c); /* Инвертированный красный градиент */
+      transform: translateY(-2px); /* Подъем кнопки */
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4); /* Усиленная красная тень */
 }
 
 #prompt {
-    display: block;
-    margin-top: 10px;
-    color: #e74c3c;
-    font-weight: bold;
+      display: block; /* Отображается как блочный элемент */
+      margin-top: 10px; /* Отступ сверху 10px */
+      color: #e74c3c; /* Красный цвет текста (для предупреждений) */
+      font-weight: bold; /* Жирное начертание */
+      min-height: 20px; /* Минимальная высота чтобы занимать место даже когда пусто */
 }
 
-li {
-    list-style: none;
-    margin: 5px 0;
-    color: white;
+.results {
+      background: rgba(255, 255, 255, 0.1); /* Полупрозрачный белый фон */
+      border-radius: 15px; /* Скругленные углы */
+      padding: 20px; /* Внутренние отступы */
+      margin-bottom: 20px; /* Отступ снизу */
+      border: 2px solid rgba(255, 255, 255, 0.2); /* Полупрозрачная рамка */
+      width: 80%; /* Ширина 80% */
+      max-width: 600px; /* Максимальная ширина 600px */
+      color: white; /* Белый цвет текста */
 }
 
-.controls-container {
-      background: rgba(255,255,255,0.1);
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      padding: 30px;
-      margin-bottom: 30px;
-      color: white;
-    }
-
-body {
-    display: flex;
-    flex-direction: column; /* Вертикальное расположение */
-    min-height: 100vh; /* Высоте окна */
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    ustify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
+.results li {
+      list-style: none; /* Убирает стандартные маркеры списка */
+      margin: 10px 0; /* Вертикальные отступы 10px сверху и снизу */
+      padding: 8px; /* Внутренние отступы */
+      background: rgba(255, 255, 255, 0.1); /* Легкий полупрозрачный фон */
+      border-radius: 5px; /* Слегка скругленные углы */
+      font-size: 16px; /* Размер шрифта */
 }
 
 .pendulum-system {
-     text-align: center;
+      display: flex; /* Flexbox для центрирования */
+      justify-content: center; /* Центрирование по горизонтали */
+      align-items: center; /* Центрирование по вертикали */
+      width: 100%; /* Полная ширина родителя */
+      margin-top: 20px; /* Отступ сверху 20px */
 }
 
 .double-pendulum {
-      display: flex;
-      justify-content: center;
-      gap: 0px; /* Увеличили расстояние для лучшей анимации */
-      padding: 50px;
-      position: relative;
-      background: rgba(255,255,255,0.1);
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
+      display: flex; /* Flexbox для горизонтального расположения */
+      justify-content: center; /* Центрирование маятников */
+      gap: 2px; /* Расстояние между маятниками 100px */
+      padding: 40px; /* Внутренние отступы вокруг маятников */
+      position: relative; /* Для позиционирования дочерних абсолютных элементов */
+      background: rgba(255, 255, 255, 0.1); /* Полупрозрачный фон */
+      border-radius: 20px; /* Скругленные углы */
+      border: 2px solid rgba(255, 255, 255, 0.2); /* Полупрозрачная рамка */
 }
 
 .pendulum {
-       position: relative;
+      position: relative; /* Для возможного позиционирования внутренних элементов */
 }
-
-        /* Анимация для первого маятника */
-.pendulum-1 .pendulum-swing {
-       animation: pendulum1-collision 3s ease-in-out infinite;
-       transform-origin: top center;
-}
-
-        /* Анимация для второго маятника */
-.pendulum-2 .pendulum-swing {
-        animation: pendulum2-collision 3s ease-in-out infinite;
-        transform-origin: top center;
- }
 
 .pendulum-swing {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+      display: flex; /* Flexbox для вертикального расположения */
+      flex-direction: column; /* Элементы располагаются вертикально */
+      align-items: center; /* Центрирование по горизонтали */
+      transform-origin: top center; /* Точка вращения - верхний центр */
+      transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); /* Плавная анимация вращения */
 }
 
 .string {
-        width: 5px;
-        height: 200px;
-        background: linear-gradient(to bottom, #bdc3c7, #7f8c8d);
-        border-radius: 2px;
+      width: 3px; /* Толщина нити 3px */
+      height: 200px; /* Длина нити 200px */
+      background: linear-gradient(to bottom, #bdc3c7, #7f8c8d); /* Градиент от светлого к темному серому */
+      border-radius: 2px; /* Слегка скругленные края */
 }
 
 .weight {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        position: relative;
-        top: -2px;
-        box-shadow:
-                0 8px 16px rgba(0,0,0,0.4),
-                inset -5px -5px 10px rgba(0,0,0,0.3),
-                inset 5px 5px 10px rgba(255,255,255,0.1);
+      width: 50px; /* Диаметр шара 50px */
+      height: 50px; /* Высота шара 50px */
+      border-radius: 50%; /* Делает элемент круглым */
+      position: relative; /* Для позиционирования относительно нити */
+      top: -2px; /* Поднимает шар на 2px чтобы перекрыть конец нити */
+      box-shadow: /* Сложная тень для создания 3D-эффекта */
+        0 8px 16px rgba(0, 0, 0, 0.4), /* Внешняя тень для объема */
+        inset -5px -5px 10px rgba(0, 0, 0, 0.3), /* Внутренняя темная тень снизу */
+        inset 5px 5px 10px rgba(255, 255, 255, 0.1); /* Внутренняя светлая тень сверху */
 }
 
 .pendulum-1 .weight {
-        background: radial-gradient(circle at 30% 30%, #e74c3c, #c0392b);
+      background: radial-gradient(circle at 30% 30%, #e74c3c, #c0392b); /* Красный радиальный градиент */
 }
 
 .pendulum-2 .weight {
-        background: radial-gradient(circle at 30% 30%, #3498db, #2980b9);
+       background: radial-gradient(circle at 30% 30%, #3498db, #2980b9); /* Синий радиальный градиент */
 }
 
-        /*Анимация столкновения для маятников*/
-@keyframes pendulum1-collision {
-    0%, 15% { transform: rotate(25deg); }   /* Стоит справа */
-    35%, 70% { transform: rotate(0deg); }   /* Движение к центру и стоит */
-    90%, 100% { transform: rotate(25deg); } /* Возврат и стоит */
+.info-panel {
+      position: absolute; /* Абсолютное позиционирование внутри double-pendulum */
+      top: 10px; /* 10px от верха родителя */
+      left: 50%; /* Начинается с середины по горизонтали */
+      transform: translateX(-50%); /* Сдвигает панель обратно на половину своей ширины для центрирования */
+      background: rgba(0, 0, 0, 0.6); /* Темный полупрозрачный фон */
+      color: white; /* Белый текст */
+      padding: 10px 20px; /* Внутренние отступы */
+      border-radius: 20px; /* Сильно скругленные углы (овальная форма) */
+      font-size: 14px; /* Небольшой размер шрифта */
+      text-align: center; /* Текст по центру */
+      min-width: 200px; /* Минимальная ширина 200px */
 }
-@keyframes pendulum2-collision {
-    0%, 35% { transform: rotate(0deg); }    /* Стоит в центре */
-    55% { transform: rotate(-25deg); }      /* Движение влево */
-    75%, 100% { transform: rotate(0deg); }  /* Возврат и стоит */
+
+.center-line {
+     position: absolute; /* Абсолютное позиционирование */
+      left: 50%; /* Начинается с середины родителя */
+      top: 50px; /* Начинается 50px от верха */
+      bottom: 100px; /* Заканчивается 100px от низа */
+      width: 2px; /* Толщина линии 2px */
+      background: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый цвет */
+      transform: translateX(-50%); /* Центрирование линии (сдвиг на половину ширины) */
+}
+
+@keyframes collision {
+      0% { transform: scale(1); } /* Начальное состояние - нормальный размер */
+      50% { transform: scale(1.2); } /* Пик анимации - увеличение на 20% */
+      100% { transform: scale(1); } /* Конечное состояние - возврат к нормальному размеру */
+}
+
+.collision {
+      animation: collision 0.3s ease-out; /* Применяет анимацию столкновения на 0.3 секунды */
 }
